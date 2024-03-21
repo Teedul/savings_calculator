@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How Long Would it Take?</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    .container {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+    input[type="number"], input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+    input[type="submit"] {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    input[type="submit"]:hover {
+        background-color: #45a049;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <h2>How Long Would it Take Me?</h2>
+    <h3>Enter your information down below to find out how much after expenses it woudl take to hit the milestones below.</h3>
+    <form id="savingsForm">
+        <label for="lastPaycheck">How Much Was Your Last Paycheck?</label>
+        <input type="number" id="lastPaycheck" name="lastPaycheck" required><br>
+        
+        <label for="payFrequency">How Many Paychecks Do You Get In A Year?</label>
+        <input type="number" id="payFrequency" name="payFrequency" required><br>
+        
+        <label for="expensePercentage">What's A Rough Percentage of Your Expenses Versus Income? (77% is National Average)</label>
+        <input type="number" id="expensePercentage" name="expensePercentage" required><br>
+        
+        <input type="submit" value="Calculate">
+    </form>
+    <div id="results"></div>
+</div>
+
+<script>
+    document.getElementById("savingsForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        var lastPaycheck = parseFloat(document.getElementById("lastPaycheck").value);
+        var payFrequency = parseFloat(document.getElementById("payFrequency").value);
+        var expensePercentage = parseFloat(document.getElementById("expensePercentage").value);
+
+        var savings = lastPaycheck * (100 - expensePercentage) / 100;
+        var savingsPerPaycheck = savings / payFrequency;
+
+        var interestRate = 5.42 / 100;
+        var targetAmounts = [100000, 225000, 500000, 1000000];
+        var yearsToSave = [];
+        var savingsNeededPerPaycheck = [];
+
+        for (var i = 0; i < targetAmounts.length; i++) {
+            var target = targetAmounts[i];
+            var years = 0;
+            var currentSavings = 0;
+
+            while (currentSavings < target) {
+                currentSavings += savingsPerPaycheck * payFrequency;
+                currentSavings *= (1 + interestRate);
+                years++;
+            }
+
+            yearsToSave.push(years);
+            savingsNeededPerPaycheck.push((target / years) / payFrequency);
+        }
+
+        var resultsHTML = "<h3>Savings Details:</h3>";
+        for (var i = 0; i < targetAmounts.length; i++) {
+            resultsHTML += "<p>You have to save $" + savingsNeededPerPaycheck[i].toFixed(2) + " for " + yearsToSave[i] + " years, to reach $" + targetAmounts[i] + " milestone.</p>";
+        }
+
+        document.getElementById("results").innerHTML = resultsHTML;
+    });
+</script>
+</body>
+</html>
