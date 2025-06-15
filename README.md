@@ -1,0 +1,1 @@
+Designed a financial savings web application, using an average of the 20 year interest rate, allows users to input their last paycheck, a percentage estimation of their monthly expenses, to automatically output how much is needed to save at each milestone
